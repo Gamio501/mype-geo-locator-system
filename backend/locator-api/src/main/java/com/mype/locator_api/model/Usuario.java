@@ -31,19 +31,19 @@ public class Usuario implements UserDetails {
 
     @NotBlank
     @Size(max = 50)
-    @Column(unique = true, nullable = false)
-    private String username;
+    @Column(name = "nombre_usuario", unique = true, nullable = false)
+    private String nombreUsuario;
 
     @NotBlank
-    @Size(max = 255) // Para BCrypt hash
-    @Column(nullable = false)
-    private String password;
+    @Size(max = 255)
+    @Column(name = "contrasenia", nullable = false)
+    private String contrasenia;
 
     @NotBlank
     @Email
     @Size(max = 100)
     @Column(unique = true, nullable = false)
-    private String email;
+    private String correo;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -52,6 +52,16 @@ public class Usuario implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return contrasenia;
+    }
+
+    @Override
+    public String getUsername() {
+        return nombreUsuario;
     }
 
     @Override

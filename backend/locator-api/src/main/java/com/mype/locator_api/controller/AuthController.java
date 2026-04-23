@@ -19,25 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtService jwtService;
+    private final AuthenticationManager administradorAutenticacion;
+    private final JwtService servicioJwt;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
-        Authentication authentication = authenticationManager.authenticate(
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest peticion) {
+        Authentication autenticacion = administradorAutenticacion.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
-                        request.getPassword()
+                        peticion.getNombreUsuario(),
+                        peticion.getContrasenia()
                 )
         );
 
-        Usuario user = (Usuario) authentication.getPrincipal();
-        String jwtToken = jwtService.generateToken(user);
+        Usuario usuario = (Usuario) autenticacion.getPrincipal();
+        String jwtToken = servicioJwt.generarToken(usuario);
 
         return ResponseEntity.ok(AuthResponse.builder()
-                .accessToken(jwtToken)
-                .username(user.getUsername())
-                .rol(user.getRol().name())
+                .tokenAcceso(jwtToken)
+                .nombreUsuario(usuario.getNombreUsuario())
+                .rol(usuario.getRol().name())
                 .build());
     }
 }

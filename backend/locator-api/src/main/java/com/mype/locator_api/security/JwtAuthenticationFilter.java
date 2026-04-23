@@ -20,41 +20,41 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final JwtService servicioJwt;
+    private final UserDetailsService servicioDetallesUsuario;
 
     @Override
     protected void doFilterInternal(
-            @NonNull HttpServletRequest request,
-            @NonNull HttpServletResponse response,
-            @NonNull FilterChain filterChain
+            @NonNull HttpServletRequest peticion,
+            @NonNull HttpServletResponse respuesta,
+            @NonNull FilterChain filtroChain
     ) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
+        final String encabezadoAutenticacion = peticion.getHeader("Authorization");
         final String jwt;
-        final String username;
+        final String nombreUsuario;
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+        if (encabezadoAutenticacion == null || !encabezadoAutenticacion.startsWith("Bearer ")) {
+            filtroChain.doFilter(peticion, respuesta);
             return;
         }
 
-        jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
+        jwt = encabezadoAutenticacion.substring(7);
+        nombreUsuario = servicioJwt.extraerNombreUsuario(jwt);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
+        if (nombreUsuario != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails detallesUsuario = this.servicioDetallesUsuario.loadUserByUsername(nombreUsuario);
+            if (servicioJwt.esTokenValido(jwt, detallesUsuario)) {
+                UsernamePasswordAuthenticationToken tokenAutenticacion = new UsernamePasswordAuthenticationToken(
+                        detallesUsuario,
                         null,
-                        userDetails.getAuthorities()
+                        detallesUsuario.getAuthorities()
                 );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
+                tokenAutenticacion.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(peticion)
                 );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
+                SecurityContextHolder.getContext().setAuthentication(tokenAutenticacion);
             }
         }
-        filterChain.doFilter(request, response);
+        filtroChain.doFilter(peticion, respuesta);
     }
 }
