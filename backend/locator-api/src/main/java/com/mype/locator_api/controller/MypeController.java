@@ -50,8 +50,8 @@ public class MypeController {
     }
     
     @GetMapping("/buscar")
-    public List<Mype> buscarPorDireccion(@RequestParam String dirrecion){
-        return mypeService.buscarPorDireccion(dirrecion);
+    public List<Mype> buscarPorDireccion(@RequestParam String direccion){
+        return mypeService.buscarPorDireccion(direccion);
     }
     
 

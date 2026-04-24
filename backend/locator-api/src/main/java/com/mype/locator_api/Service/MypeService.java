@@ -44,9 +44,8 @@ public class MypeService {
     public List<Mype> buscarPorDireccion(String direccion) {
         return mypeRepository.findAll()
                 .stream()
-                .filter(mype -> direccion
-                .equalsIgnoreCase(mype.getDireccion()))
-                .toList();
+                .filter(mype -> mype.getDireccion() != null && mype.getDireccion().toLowerCase()
+            .contains(direccion.toLowerCase())).toList();
 
     }
 
