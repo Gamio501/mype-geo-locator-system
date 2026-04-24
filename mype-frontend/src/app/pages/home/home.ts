@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd } from '@angular/router';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { filter } from 'rxjs';
-import { ProductoService } from '../../core/services/producto.service';
+
+import { MypeService } from '../../services/mype.service';
+import { Mype } from '../../services/mype';
 
 @Component({
   selector: 'app-home',
@@ -14,51 +15,66 @@ import { ProductoService } from '../../core/services/producto.service';
 })
 export class Home implements OnInit {
 
-  productos: any[] = [];
+  mypes: Mype[] = [];
   busqueda = '';
+  errorCarga = '';
 
   constructor(
     private router: Router,
-    private productoService: ProductoService
+    private mypeService: MypeService
   ) {}
 
   ngOnInit() {
-    this.cargarProductos();
-
-    this.router.events
-      .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.cargarProductos();
-      });
+    this.cargarMypes();
   }
 
-  cargarProductos() {
-    this.productoService.getProductos().subscribe({
+  // ✅ CARGAR DATA
+  cargarMypes() {
+    this.mypeService.getMypes().subscribe({
       next: (data) => {
-        this.productos = data;
+        this.mypes = data;
+        this.errorCarga = '';
       },
-      error: (err) => {
-        console.error('Error al cargar productos', err);
+      error: () => {
+        this.errorCarga = 'No se pudieron cargar las MYPES.';
       }
     });
   }
 
-  productosFiltrados() {
-    return this.productos.filter(p =>
-      p.nombre.toLowerCase().includes(this.busqueda.toLowerCase())
+  // ✅ FILTRO (GETTER CORRECTO)
+  get mypesFiltradas(): Mype[] {
+    const termino = this.busqueda.trim().toLowerCase();
+    if (!termino) {
+      return this.mypes;
+    }
+
+    return this.mypes.filter(m =>
+      `${m.nombreComercial ?? ''} ${m.ruc ?? ''} ${m.direccion ?? ''}`
+        .toLowerCase()
+        .includes(termino)
     );
   }
 
-  getEstadoTexto(stock: number) {
-    if (stock > 10) return 'Disponible';
-    if (stock > 5) return 'Bajo';
-    return 'No disponible';
+  // ✅ DETALLE
+  verDetalle(mype: Mype) {
+    console.log('Detalle:', mype);
+    this.router.navigate(['/mype-perfil']);
   }
 
-  getEstadoClass(stock: number) {
-    if (stock > 10) return 'ok';
-    if (stock > 5) return 'low';
-    return 'off';
+  // -------------------
+  // NAVBAR (OBLIGATORIO)
+  // -------------------
+
+  isLogged() {
+    return !!localStorage.getItem('token');
+  }
+
+  getUser() {
+    return localStorage.getItem('usuario');
+  }
+
+  getRol() {
+    return localStorage.getItem('rol');
   }
 
   goLogin() {
@@ -74,27 +90,7 @@ export class Home implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem('token');
+    localStorage.clear();
     this.router.navigate(['/']);
-  }
-
-  isLogged() {
-    return !!localStorage.getItem('token');
-  }
-
-  getUser() {
-    return localStorage.getItem('usuario');
-  }
-
-  getRol() {
-    return localStorage.getItem('rol');
-  }
-
-  comprar() {
-    if (!this.isLogged()) {
-      this.router.navigate(['/login']);
-    } else {
-      alert('Pedido realizado');
-    }
   }
 }

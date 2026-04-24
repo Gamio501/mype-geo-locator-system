@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -13,8 +14,13 @@ import { Router } from '@angular/router';
 export class Login {
 
   form!: FormGroup;
+  error = '';
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private authService: AuthService
+  ) {
     this.form = this.fb.group({
       usuario: ['', Validators.required],
       password: ['', Validators.required]
@@ -30,24 +36,20 @@ export class Login {
       return;
     }
 
-    if (usuario === 'frank' && password === '12345') {
-      localStorage.setItem('token', 'fake');
-      localStorage.setItem('usuario', 'Frank');
-      localStorage.setItem('rol', 'cliente');
-
-      this.router.navigate(['/']);
-      return;
-    }
-
-    if (usuario === 'bodega' && password === '12345') {
-      localStorage.setItem('token', 'fake');
-      localStorage.setItem('usuario', 'Bodega Don Gilberto');
-      localStorage.setItem('rol', 'mype');
-
-      this.router.navigate(['/']);
-      return;
-    }
-
-    alert('Credenciales incorrectas');
+    this.authService.login({
+      nombreUsuario: usuario,
+      contrasenia: password
+    }).subscribe({
+      next: (respuesta) => {
+        localStorage.setItem('token', respuesta.tokenAcceso);
+        localStorage.setItem('usuario', respuesta.nombreUsuario);
+        localStorage.setItem('rol', respuesta.rol.toLowerCase());
+        this.error = '';
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.error = 'Credenciales incorrectas o servidor no disponible.';
+      }
+    });
   }
 }

@@ -3,7 +3,7 @@
 
   <div class="nav-right">
     <span *ngIf="isLogged()" class="user">
-      Hola :D 👋 {{ getUser() }}
+      Hola 👋 {{ getUser() }}
       <span *ngIf="getRol() === 'mype'" class="badge">Negocio</span>
     </span>
 
@@ -23,40 +23,46 @@
   </div>
 </header>
 
-<section class="products">
+<section class="mypes">
 
-  <h2>Productos disponibles</h2>
+  <h2>Mypes registradas</h2>
 
   <input 
     type="text" 
-    placeholder="Buscar producto..." 
+    placeholder="Buscar por nombre, RUC o dirección..." 
     [(ngModel)]="busqueda"
     class="search"
   />
 
+  <p *ngIf="errorCarga">{{ errorCarga }}</p>
+
   <div class="grid">
-    <div class="card" *ngFor="let p of productosFiltrados()">
+
+    <div class="card" *ngFor="let m of mypesFiltradas">
 
       <div class="card-header">
-        <div class="icon">🛒</div>
-        <span class="estado" [ngClass]="getEstadoClass(p.stock)">
-          {{ getEstadoTexto(p.stock) }}
+        <div class="icon">🏪</div>
+        <span class="estado">
+          ID: {{ m.id }}
         </span>
       </div>
 
-      <h3>{{ p.nombre }}</h3>
-      <p class="price">S/ {{ p.precio }}</p>
-      <p class="mype">🏪 {{ p.tienda }}</p>
+      <h3>{{ m.nombreComercial }}</h3>
 
-      <button 
-        class="btn-buy"
-        (click)="comprar()" 
-        [disabled]="!isLogged()"
-      >
-        {{ isLogged() ? 'Comprar' : 'Inicia sesión' }}
+      <p class="price">📄 RUC: {{ m.ruc }}</p>
+
+      <p class="mype">📍 {{ m.direccion }}</p>
+
+      <p class="coords">
+        🌐 Lat: {{ m.latitud }} | Lng: {{ m.longitud }}
+      </p>
+
+      <button class="btn-buy" (click)="verDetalle(m)">
+        Ver detalle
       </button>
 
     </div>
+
   </div>
 
 </section>
