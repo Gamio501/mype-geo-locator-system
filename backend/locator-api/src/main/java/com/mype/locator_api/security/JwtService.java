@@ -17,7 +17,6 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Clave secreta (debe tener al menos 32 caracteres para HS256)
     private static final String CLAVE_SECRETA = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
 
     public String extraerNombreUsuario(String token) {
@@ -39,7 +38,7 @@ public class JwtService {
                 .setClaims(atributosExtra)
                 .setSubject(detallesUsuario.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24)) // 24 horas
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(obtenerLlaveFirma(), SignatureAlgorithm.HS256)
                 .compact();
     }
