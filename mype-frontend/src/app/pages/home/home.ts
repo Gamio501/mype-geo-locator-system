@@ -28,7 +28,7 @@ export class Home implements OnInit {
     this.cargarMypes();
   }
 
-  // ✅ CARGAR DATA
+  
   cargarMypes() {
     this.mypeService.getMypes().subscribe({
       next: (data) => {
@@ -41,7 +41,7 @@ export class Home implements OnInit {
     });
   }
 
-  // ✅ FILTRO (GETTER CORRECTO)
+ 
   get mypesFiltradas(): Mype[] {
     const termino = this.busqueda.trim().toLowerCase();
     if (!termino) {
@@ -55,15 +55,12 @@ export class Home implements OnInit {
     );
   }
 
-  // ✅ DETALLE
+ 
   verDetalle(mype: Mype) {
     console.log('Detalle:', mype);
     this.router.navigate(['/mype-perfil']);
   }
 
-  // -------------------
-  // NAVBAR (OBLIGATORIO)
-  // -------------------
 
   isLogged() {
     return !!localStorage.getItem('token');
