@@ -1,0 +1,47 @@
+.register-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #2196F3, #1565C0);
+}
+
+form {
+  background: white;
+  padding: 40px;
+  border-radius: 15px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+input, select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%;
+}
+
+.coords {
+  display: flex;
+  gap: 10px;
+}
+
+button.primary {
+  padding: 12px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}

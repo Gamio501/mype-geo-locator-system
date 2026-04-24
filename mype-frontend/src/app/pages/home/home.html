@@ -1,0 +1,62 @@
+<header class="navbar">
+  <div class="logo">🛒 MypeApp</div>
+
+  <div class="nav-right">
+    <span *ngIf="isLogged()" class="user">
+      Hola :D 👋 {{ getUser() }}
+      <span *ngIf="getRol() === 'mype'" class="badge">Negocio</span>
+    </span>
+
+    <button *ngIf="getRol() === 'mype'" class="btn secondary" (click)="goMype()">
+      Mi Mype
+    </button>
+
+    <button *ngIf="!isLogged()" class="btn" (click)="goLogin()">Login</button>
+
+    <button *ngIf="!isLogged()" class="btn primary" (click)="goRegister()">
+      Registrarse
+    </button>
+
+    <button *ngIf="isLogged()" class="btn danger" (click)="logout()">
+      Salir
+    </button>
+  </div>
+</header>
+
+<section class="products">
+
+  <h2>Productos disponibles</h2>
+
+  <input 
+    type="text" 
+    placeholder="Buscar producto..." 
+    [(ngModel)]="busqueda"
+    class="search"
+  />
+
+  <div class="grid">
+    <div class="card" *ngFor="let p of productosFiltrados()">
+
+      <div class="card-header">
+        <div class="icon">🛒</div>
+        <span class="estado" [ngClass]="getEstadoClass(p.stock)">
+          {{ getEstadoTexto(p.stock) }}
+        </span>
+      </div>
+
+      <h3>{{ p.nombre }}</h3>
+      <p class="price">S/ {{ p.precio }}</p>
+      <p class="mype">🏪 {{ p.tienda }}</p>
+
+      <button 
+        class="btn-buy"
+        (click)="comprar()" 
+        [disabled]="!isLogged()"
+      >
+        {{ isLogged() ? 'Comprar' : 'Inicia sesión' }}
+      </button>
+
+    </div>
+  </div>
+
+</section>

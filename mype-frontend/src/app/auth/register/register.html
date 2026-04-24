@@ -1,0 +1,33 @@
+<div class="register-container">
+  <form [formGroup]="form" (ngSubmit)="register()">
+    <h2>Crear cuenta</h2>
+
+    <div class="row">
+      <input type="text" placeholder="Usuario" formControlName="usuario" />
+      <input type="email" placeholder="Email" formControlName="email" />
+    </div>
+
+    <input type="password" placeholder="Contraseña" formControlName="password" />
+
+    <select formControlName="rol">
+      <option value="">Seleccione rol</option>
+      <option value="cliente">Cliente</option>
+      <option value="mype">Mype</option>
+    </select>
+
+    <div *ngIf="form.get('rol')?.value === 'mype'" class="mype-section">
+      <input type="text" placeholder="Nombre Comercial" formControlName="nombre_comercial" />
+      <input type="text" placeholder="RUC" formControlName="ruc" />
+      <input type="text" placeholder="Dirección" formControlName="direccion" />
+
+      <button type="button" (click)="getLocation()">Obtener ubicación</button>
+
+      <div class="coords">
+        <input type="text" placeholder="Latitud" formControlName="latitud" readonly />
+        <input type="text" placeholder="Longitud" formControlName="longitud" readonly />
+      </div>
+    </div>
+
+    <button class="primary" type="submit">Registrarse</button>
+  </form>
+</div>

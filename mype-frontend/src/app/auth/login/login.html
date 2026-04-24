@@ -1,0 +1,17 @@
+<div class="login-container">
+  <form [formGroup]="form" (ngSubmit)="login()">
+    <h2>Iniciar sesión</h2>
+
+    <input type="text" placeholder="Usuario" formControlName="usuario" />
+    <div *ngIf="form.get('usuario')?.invalid && form.get('usuario')?.touched">
+      Usuario requerido
+    </div>
+
+    <input type="password" placeholder="Contraseña" formControlName="password" />
+    <div *ngIf="form.get('password')?.invalid && form.get('password')?.touched">
+      Contraseña requerida
+    </div>
+
+    <button type="submit">Ingresar</button>
+  </form>
+</div>

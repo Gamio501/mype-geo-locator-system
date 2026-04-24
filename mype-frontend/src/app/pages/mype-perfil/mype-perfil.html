@@ -1,0 +1,43 @@
+<header class="navbar">
+  <div class="logo">🛒 MypeApp</div>
+
+  <div class="nav-right">
+    <span class="user">
+      👋 {{ getUser() }}
+      <span class="badge">Negocio</span>
+    </span>
+
+    <button class="btn secondary" (click)="irInicio()">Inicio</button>
+    <button class="btn danger" (click)="logout()">Salir</button>
+  </div>
+</header>
+
+<div class="container">
+
+  <h2>Mi Negocio</h2>
+
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="card">
+    <input type="text" formControlName="nombre" placeholder="Nombre comercial" />
+    <input type="text" formControlName="direccion" placeholder="Dirección" />
+    <button type="submit">Guardar cambios</button>
+  </form>
+
+  <h2>Mis Productos</h2>
+
+  <form [formGroup]="productoForm" (ngSubmit)="agregarProducto()" class="card">
+    <input type="text" formControlName="nombre" placeholder="Producto" />
+    <input type="number" formControlName="precio" placeholder="Precio" />
+    <input type="number" formControlName="stock" placeholder="Stock" />
+    <button type="submit">Agregar producto</button>
+  </form>
+
+  <div class="grid">
+    <div class="producto" *ngFor="let p of productos; let i = index">
+      <h3>{{ p.nombre }}</h3>
+      <p>S/ {{ p.precio }}</p>
+      <p>Stock: {{ p.stock }}</p>
+      <button (click)="eliminarProducto(i)">Eliminar</button>
+    </div>
+  </div>
+
+</div>
